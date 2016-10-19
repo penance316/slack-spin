@@ -50,7 +50,7 @@ app.post('/', function(req, res) {
   }
 
   // split the names by spaces and remove any empty entries
-  var people = req.body.message
+  var people = req.body.text
     .split(' ')
     .filter(function(item) {
       return item !== '';
