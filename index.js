@@ -33,7 +33,7 @@ app.all('/*', function(req, res, next) {
     next();
   } else {
     res.status(403).send({
-      message: 'No token provided.'
+      message: 'No token provided or is incorrect.'
     });
   }
 });
