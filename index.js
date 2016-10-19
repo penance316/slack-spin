@@ -33,7 +33,7 @@ app.all('/*', function(req, res, next) {
     next();
   } else {
     res.status(403).send({
-      message: 'No token provided or is incorrect.'
+      text: 'No token provided or is incorrect.'
     });
   }
 });
@@ -57,7 +57,7 @@ app.post('/', function(req, res) {
   var response = responses[Math.floor(Math.random() * responses.length)];
 
   res.json({
-    message: response
+    text: response
   });
   console.log('Request made at ' + date + '. ' + person + ' was chosen.');
 });
@@ -67,7 +67,7 @@ app.post('/', function(req, res) {
  */
 app.post('/help', function(req, res) {
   res.json({
-    message: 'Checkout https://github.com/penance316/slack-spin for help.'
+    text: 'Checkout https://github.com/penance316/slack-spin for help.'
   });
   console.log('Help request made at ' + date + '.');
 });
