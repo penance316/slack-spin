@@ -3,21 +3,47 @@
 'use strict';
 
 var PORT = process.env.PORT || 8080;
+var TOKEN = process.env.BOT_API_KEY;
 
-var url = require('url');
-var http = require('http');
-var args = require('minimist')(process.argv.slice(2));
+var express = require('express');
+var bodyParser = require('body-parser');
+var args = require('minimist')(process.argv.slice(2)); // the names provided via slack
 
-var server = http.createServer(function(req, res) {
-  var uri = url.parse(req.url).pathname;
+var app = express();
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+// parse application/json
+app.use(bodyParser.json());
+
+//date for logging
+var date = new Date();
+
+/*******************\
+    The routes
+\*******************/
+
+/**
+ *  authenticate first on all routes
+ */
+app.all('/*', function(req, res, next) {
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (token === TOKEN) {
+    next();
+  } else {
+    res.status(403).send({
+      message: 'No token provided.'
+    });
+  }
+});
+
+/**
+ * return the chosen one
+ */
+app.post('/', function(req, res) {
   var people = args._;
-  var date = new Date();
   var person = people[Math.floor(Math.random() * people.length)];
-
-  // prep head
-  res.writeHead(200, {
-    'Content-Type': 'application/json'
-  });
 
   // build random response
   var responses = [
@@ -28,31 +54,28 @@ var server = http.createServer(function(req, res) {
     'And behind door number 1, ' + person
   ];
 
-  // pick one
   var response = responses[Math.floor(Math.random() * responses.length)];
-  var helpResponse = 'Checkout https://github.com/penance316/slack-spin for help.';
-  var errorResponse = 'That url does not exist.';
 
-  // check the request and respond accodingly
-  if (uri === '/') {
-    res.end(JSON.stringify({
-      'text': response
-    }));
-    console.log('Request made at ' + date + '. ' + person + ' was chosen.');
-  } else if (uri === '/help') {
-    res.end(JSON.stringify({
-      'text': helpResponse
-    }));
-    console.log('Help request made at ' + date + '.');
-  } else {
-    res.end(JSON.stringify({
-      'text': errorResponse
-    }));
-    console.log('Error request made at ' + date + '.');
-  }
-
+  res.json({
+    message: response
+  });
+  console.log('Request made at ' + date + '. ' + person + ' was chosen.');
 });
 
-server.listen(PORT, function() {
+/**
+ * some assistance required
+ */
+app.post('/help', function(req, res) {
+  res.json({
+    message: 'Checkout https://github.com/penance316/slack-spin for help.'
+  });
+  console.log('Help request made at ' + date + '.');
+});
+
+/*******************\
+    And we are off
+\*******************/
+
+app.listen(PORT, function() {
   console.log('Server listening on port:', PORT);
 });
