@@ -42,7 +42,7 @@ app.all('/*', function(req, res, next) {
  */
 app.post('/', function(req, res) {
   // check if any names have actually been sent
-  if (!req.body.message || req.body.message === '') {
+  if (!req.body.text || req.body.text === '') {
     res.json({
       text: 'No names supplied?!'
     });
