@@ -7,7 +7,6 @@ var TOKEN = process.env.BOT_API_KEY;
 
 var express = require('express');
 var bodyParser = require('body-parser');
-var args = require('minimist')(process.argv.slice(2)); // the names provided via slack
 
 var app = express();
 // parse application/x-www-form-urlencoded
@@ -42,7 +41,21 @@ app.all('/*', function(req, res, next) {
  * return the chosen one
  */
 app.post('/', function(req, res) {
-  var people = args._;
+  // check if any names have actually been sent
+  if (!req.body.message || req.body.message === '') {
+    res.json({
+      text: 'No names supplied?!'
+    });
+    res.end();
+  }
+
+  // split the names by spaces and remove any empty entries
+  var people = req.body.message
+    .split(' ')
+    .filter(function(item) {
+      return item !== '';
+    });
+
   var person = people[Math.floor(Math.random() * people.length)];
 
   // build random response
