@@ -3,7 +3,7 @@
 'use strict';
 
 var PORT = process.env.PORT || 8080;
-var TOKEN = process.env.BOT_API_KEY;
+var TOKEN = process.env.BOT_API_KEY; //if not provided then will be unsecured
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -70,6 +70,7 @@ app.post('/', function(req, res) {
   var response = responses[Math.floor(Math.random() * responses.length)];
 
   res.json({
+    response_type: 'in_channel',
     text: response
   });
   console.log('Request made at ' + date + '. ' + person + ' was chosen.');
