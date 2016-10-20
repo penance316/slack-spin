@@ -34,6 +34,7 @@ app.all('/*', function(req, res, next) {
     res.status(403).send({
       text: 'No token provided or is incorrect.'
     });
+    console.log('No token provided or is incorrect at ' + date + '. ');
   }
 });
 
@@ -42,11 +43,13 @@ app.all('/*', function(req, res, next) {
  */
 app.post('/', function(req, res) {
   // check if any names have actually been sent
-  if (!req.body.text || req.body.text === '') {
+  if (!req.body.text || req.body.text.trim() === '') {
     res.json({
       text: 'No names supplied?!'
     });
     res.end();
+    console.log('No names supplied at ' + date + '. ');
+    return;
   }
 
   // split the names by spaces and remove any empty entries
