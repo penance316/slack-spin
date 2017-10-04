@@ -10,3 +10,7 @@ Then hit the service via url
 ```
 http://localhost:8080/
 ```
+Can accept multiple comma seperated api keys
+```
+BOT_API_KEY=123,456 nodemon index.js
+```
