@@ -3,7 +3,7 @@
 'use strict';
 
 var PORT = process.env.PORT || 8080;
-var TOKEN = process.env.BOT_API_KEY; //if not provided then will be unsecured
+var TOKEN =  process.env.BOT_API_KEY ? process.env.BOT_API_KEY.split(',') : null //if not provided then will be unsecured
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -28,7 +28,9 @@ var date = new Date();
  */
 app.all('/*', function(req, res, next) {
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
-  if (token === TOKEN) {
+  if (TOKEN === null) { next() };
+
+  if (TOKEN.includes(token)) {
     next();
   } else {
     res.status(403).send({
